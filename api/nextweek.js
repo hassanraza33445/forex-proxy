@@ -3,7 +3,22 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET');
   
   try {
-    const response = await fetch('https://nfs.faireconomy.media/ff_calendar_nextweek.json', {
+    // Forex Factory next week URL with date range
+    const now = new Date();
+    const day = now.getDay();
+    const mondayOffset = day === 0 ? 1 : 8 - day;
+    const nextMonday = new Date(now);
+    nextMonday.setDate(now.getDate() + mondayOffset);
+    nextMonday.setHours(0,0,0,0);
+    
+    const nextSunday = new Date(nextMonday);
+    nextSunday.setDate(nextMonday.getDate() + 6);
+    
+    const fmt = (d) => `${d.getMonth()+1}-${d.getDate()}-${d.getFullYear()}`;
+    
+    const url = `https://nfs.faireconomy.media/ff_calendar_thisweek.json?week=${fmt(nextMonday)}`;
+    
+    const response = await fetch(url, {
       headers: { 'User-Agent': 'Mozilla/5.0' }
     });
     
